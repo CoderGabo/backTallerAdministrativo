@@ -6,7 +6,7 @@ const validator = require('validator');
 // Crear un nuevo usuario
 exports.crearUsuario = async (req, res) => {
   try {
-    const { email, phone } = req.body;
+    const { email, phone, rolId,subscription_id } = req.body;
 
     // Validar email y phone
     if (!validator.isEmail(email)) {
@@ -15,6 +15,13 @@ exports.crearUsuario = async (req, res) => {
     if (!validator.isNumeric(phone) || phone.length < 7 || phone.length > 12) {
       return res.status(400).json({ error: 'Introduce un número de teléfono válido' });
     }
+
+    if(Number(rolId) === 2) {
+      req.body.trial_status = -1;
+    }else if(Number(rolId) === 1){
+      req.body.trial_status = subscription_id ? -1 : 5;
+    }
+
     const usuario = await Usuario.create(req.body);
     res.status(201).json({usuario, mensaje: 'Usuario creado exitosamente'});
   } catch (error) {
@@ -75,6 +82,32 @@ exports.actualizarUsuario = async (req, res) => {
   }
 };
 
+// Actualizar estado de prueba
+exports.actualizarEstadoPrueba = async (req, res) => {
+  try {
+
+    const usuario = await Usuario.findOne({
+      where: {
+        email: req.params.email
+      }
+    });
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    if (usuario.trial_status > 0) {
+      usuario.trial_status -= 1;
+    } else if (usuario.trial_status === 0) {
+      return res.status(400).json({mensaje: 'El periodo de prueba ya ha expirado' });
+    }
+
+    await usuario.save(); 
+    res.status(200).json({usuario, mensaje: 'Estado de Prueba actualizado exitosamente'});
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 // Eliminar un usuario
 exports.eliminarUsuario = async (req, res) => {
   try {
@@ -115,13 +148,13 @@ exports.login = async (req, res) => {
       return res.status(404).json({ error: 'Contraseña inválida' });
     }
 
-    console.log(usuario)
     const usuarioConRol = {
+      id: usuario.id,
       supername: usuario.supername,
       email: usuario.email,
       phone: usuario.phone,
-      rol: usuario.rol ? usuario.rol.nombre : null, // Nombre del rol
-      // Puedes incluir más campos según sea necesario
+      rol: usuario.rol ? usuario.rol.nombre : null,
+      trial_status: usuario.trial_status,
     };
 
 

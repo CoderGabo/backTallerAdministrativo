@@ -3,6 +3,7 @@ const router = express.Router();
 
 const usuarioController = require('../controllers/UsuarioController.js');
 const roleController = require('../controllers/RoleController.js');
+const subscriptionController = require('../controllers/SubscriptionController.js');
 
 module.exports = function(){
     // Usuario
@@ -18,6 +19,9 @@ module.exports = function(){
 
     // Actualizar un usuario
     router.put('/usuarios/:id', usuarioController.actualizarUsuario);
+
+    // Actualizar estado de prueba
+    router.put('/usuarios/trial/:email', usuarioController.actualizarEstadoPrueba);
 
     // Eliminar un usuario
     router.delete('/usuarios/:id', usuarioController.eliminarUsuario);
@@ -36,6 +40,18 @@ module.exports = function(){
 
     // Eliminar un rol
     router.delete('/roles/:id', roleController.eliminarRole);
+
+    // Obtener subscripciones
+    router.get('/subscriptions', subscriptionController.getSubscriptions);
+
+    // Obtener subscripciones stripe
+    router.get('/subscriptions/stripe', subscriptionController.getStripeSubscriptions);
+
+    // Crear suscripcion
+    router.post('/subscriptions', subscriptionController.createSubscription);
+
+    // Actualizar suscripcion
+    router.put('/subscriptions/:id', subscriptionController.updateSubscription)
 
     //Login 
     router.post('/login', usuarioController.login);

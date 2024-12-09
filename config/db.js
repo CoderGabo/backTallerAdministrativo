@@ -17,4 +17,14 @@ const sequelize = new Sequelize(
 
     }
 );
+
+// const sequelize = new Sequelize(
+//     'administrativo',
+//     'postgres',
+//     'Restaurante',
+//     {
+//         host: 'localhost',
+//         dialect: "postgres",
+//     }
+// );
 module.exports = sequelize;

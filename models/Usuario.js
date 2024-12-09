@@ -1,7 +1,8 @@
 const Sequelize = require('sequelize');
 const bcrypt = require('bcrypt');
 const db = require('../config/db');
-const Rol = require('./Rol'); // Importa el modelo Rol
+const Rol = require('./Rol');
+const Subscription = require('./Suscription');
 
 const Usuario = db.define('usuario', {
     id: {
@@ -48,6 +49,15 @@ const Usuario = db.define('usuario', {
                 msg: 'El número de teléfono debe tener entre 7 y 12 caracteres'
             }
         }
+    },
+    trial_status: {
+        type: Sequelize.INTEGER,
+        validate: {
+            isIn: {
+                args: [[5, 4, 3, 2, 1, 0, -1]],
+                msg: 'El estado de prueba debe ser 5 y -1'
+            }
+        }
     }
 }, {
     hooks: {
@@ -70,5 +80,12 @@ Usuario.belongsTo(Rol, {
         allowNull: false
     }
 });
+
+Usuario.belongsTo(Subscription, {
+    foreignKey: {
+        name: 'subscription_id',
+        allowNull: true
+    }
+})
 
 module.exports = Usuario;
