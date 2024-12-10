@@ -14,16 +14,16 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-// const corsOptions = {
-//   origin: 'https://shimmering-profiterole-cad607.netlify.app',
-//   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos HTTP permitidos
-//   allowedHeaders: ['Content-Type', 'Authorization'], // Encabezados permitidos
-// };
+const corsOptions = {
+  origin: 'https://glittering-brioche-e882c3.netlify.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos HTTP permitidos
+  allowedHeaders: ['Content-Type', 'Authorization'], // Encabezados permitidos
+};
 
-// app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 
 
-app.use(cors());
+// app.use(cors());
 
 //Rutas de la app
 app.use('/',routes());
