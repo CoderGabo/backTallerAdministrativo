@@ -4,6 +4,7 @@ const router = express.Router();
 const usuarioController = require('../controllers/UsuarioController.js');
 const roleController = require('../controllers/RoleController.js');
 const subscriptionController = require('../controllers/SubscriptionController.js');
+const codeController = require('../controllers/CodeController.js');
 
 module.exports = function(){
     // Usuario
@@ -52,6 +53,12 @@ module.exports = function(){
 
     // Actualizar suscripcion
     router.put('/subscriptions/:id', subscriptionController.updateSubscription)
+
+    // Obtener Historias de codigos generados
+    router.get('/codes/:user_id', codeController.getCodeByUser )
+
+    // Crear o Actualizar codigo generado
+    router.post('/codes/update-or-create', codeController.updateOrCreateCode);
 
     //Login 
     router.post('/login', usuarioController.login);
